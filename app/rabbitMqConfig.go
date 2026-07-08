@@ -2,6 +2,7 @@ package rabbitMq
 
 import (
 	"log"
+
 	"github.com/streadway/amqp"
 )
 
@@ -42,6 +43,7 @@ func (cho *RabbitMQConfig) ConfigureHost() (<-chan amqp.Delivery, error) {
 	cho.failOnError(err, "Erro ao registrar consumer")
 	return msgs, nil
 }
+
 func (FoE *RabbitMQConfig) failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
@@ -69,5 +71,3 @@ func (FoE *RabbitMQConfig) failOnError(err error, msg string) {
 // 		// ✅ Confirma processamento
 // 		d.Ack(false)
 // 	}
-
-}
