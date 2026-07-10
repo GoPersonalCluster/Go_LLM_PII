@@ -1,0 +1,99 @@
+version: '3.9'
+
+services:
+  llm:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      - llm
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10 &&
+      ollama pull gemma3:270m
+      "
+    restart: "no"
+    
+  postgres-pii-llm:
+    image: postgres:17
+    container_name: postgres-pii-llm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pg_rabbitmq_log
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command:
+      - postgres
+      - -c
+      - listen_addresses=*
+      - -c
+      - ssl=off
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  llm-pii:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    env_file:
+      - development.env
+
+    environment:
+      OLLAMA_URL: http://llm:11434
+
+    depends_on:
+      postgres-pii-llm:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      llm:
+        condition: service_started
+
+    volumes:
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    container_name: app-llm-pii
+    ports:
+      - "8080:8080"
+
+    stdin_open: true
+    tty: true
+
+volumes:
+  ollama_data:
+  go-mod-cache:
+  go-build-cache:
+  postgres_data:
+  rabbitmq_data:
