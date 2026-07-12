@@ -27,6 +27,7 @@ type EnvironmentConfig struct {
 	PostgresUser     string
 	PostgresPassword string
 	HostName         string
+	LLMPIIHost       string
 }
 
 func GetHostName() string {
@@ -46,5 +47,6 @@ func NewEnvironmentConfig() *EnvironmentConfig {
 		PostgresUser:     getEnv("postgres_user"),
 		PostgresPassword: getEnv("postgres_password"),
 		HostName:         getEnv("host_name"),
+		LLMPIIHost:       getEnv("llm_pii_host"),
 	}
 }

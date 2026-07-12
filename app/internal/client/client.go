@@ -8,6 +8,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/GoPersonalCluster/go_llm_pii/app/internal/config"
 )
 
 type Message struct {
@@ -35,9 +37,11 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
-func NewClient(baseURL string) *Client {
+func NewClient() *Client {
+	envConfig := config.NewEnvironmentConfig()
+
 	return &Client{
-		BaseURL: baseURL,
+		BaseURL: envConfig.LLMPIIHost,
 		Model:   "gemma3:270m",
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Minute,
@@ -52,6 +56,37 @@ func (c *Client) Chat(ctx context.Context, prompt string) (string, error) {
 		Stream: false,
 		Messages: []Message{
 			{
+				Role: "system",
+				Content: `You are a PII detection engine.
+
+Analyze the user's text and extract every Personally Identifiable Information (PII).
+
+Rules:
+- Respond ONLY with key=value pairs.
+- One pair per line.
+- Do not include explanations.
+- Do not include markdown.
+- Do not include JSON.
+- If multiple values exist for the same key, repeat the key.
+- If no PII is found, respond only with:
+NONE
+
+Allowed keys:
+name
+email
+phone
+address
+ssn
+passport
+driver_license
+credit_card
+expiration_date
+cvv
+bank_account
+routing_number
+date_of_birth`,
+			},
+			{
 				Role:    "user",
 				Content: prompt,
 			},
@@ -59,8 +94,10 @@ func (c *Client) Chat(ctx context.Context, prompt string) (string, error) {
 	}
 
 	body, err := json.Marshal(reqBody)
+
 	if err != nil {
-		return "", err
+		println("Error marshalling request body:", err)
+		return "error 100", err
 	}
 	req, err := http.NewRequestWithContext(
 		ctx,
@@ -71,18 +108,17 @@ func (c *Client) Chat(ctx context.Context, prompt string) (string, error) {
 
 	if err != nil {
 		println("Error creating request:", err)
-		return "", err
+		return "error 111", err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.HTTPClient.Do(req)
-
 	if err != nil {
-		return "", err
+		return "error 122", err
 	}
 	//defer resp.Body.Close()
-
+	println("llm 85")
 	if resp.StatusCode != http.StatusOK {
 
 		data, err := io.ReadAll(resp.Body)
@@ -97,10 +133,7 @@ func (c *Client) Chat(ctx context.Context, prompt string) (string, error) {
 			return "", err
 		}
 	}
-	time.Sleep(2 * time.Second)
-	println("llm data 100")
 	data, err := io.ReadAll(resp.Body)
-	println("llm data")
 	println(json.Marshal(data))
 	if err != nil {
 		println("error")
