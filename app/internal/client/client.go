@@ -42,7 +42,7 @@ func NewClient() *Client {
 
 	return &Client{
 		BaseURL: envConfig.LLMPIIHost,
-		Model:   "gemma3:270m",
+		Model:   envConfig.LLMModel,
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Minute,
 		},
@@ -60,31 +60,14 @@ func (c *Client) Chat(ctx context.Context, prompt string) (string, error) {
 				Content: `You are a PII detection engine.
 
 Analyze the user's text and extract every Personally Identifiable Information (PII).
-
 Rules:
 - Respond ONLY with key=value pairs.
 - One pair per line.
+- Each Pair must contain a key identifier and its value.
 - Do not include explanations.
 - Do not include markdown.
 - Do not include JSON.
-- If multiple values exist for the same key, repeat the key.
-- If no PII is found, respond only with:
-NONE
-
-Allowed keys:
-name
-email
-phone
-address
-ssn
-passport
-driver_license
-credit_card
-expiration_date
-cvv
-bank_account
-routing_number
-date_of_birth`,
+- If multiple values exist for the same key, repeat the key.`,
 			},
 			{
 				Role:    "user",
