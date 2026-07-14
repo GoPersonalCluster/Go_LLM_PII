@@ -32,18 +32,18 @@ type ChatResponse struct {
 }
 
 type Client struct {
-	BaseURL    string
-	Model      string
-	HTTPClient *http.Client
+	baseURL    string
+	model      string
+	hTTPClient *http.Client
 }
 
 func NewClient() *Client {
 	envConfig := config.NewEnvironmentConfig()
 
 	return &Client{
-		BaseURL: envConfig.LLMPIIHost,
-		Model:   envConfig.LLMModel,
-		HTTPClient: &http.Client{
+		baseURL: envConfig.LLMPIIHost,
+		model:   envConfig.LLMModel,
+		hTTPClient: &http.Client{
 			Timeout: 5 * time.Minute,
 		},
 	}
@@ -52,7 +52,7 @@ func NewClient() *Client {
 func (c *Client) Chat(ctx context.Context, prompt string) (string, error) {
 
 	reqBody := ChatRequest{
-		Model:  c.Model,
+		Model:  c.model	,
 		Stream: false,
 		Messages: []Message{
 			{
@@ -85,7 +85,7 @@ Rules:
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		c.BaseURL+"/api/chat",
+		c.baseURL+"/api/chat",
 		bytes.NewBuffer(body),
 	)
 
@@ -96,7 +96,7 @@ Rules:
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.hTTPClient.Do(req)
 	if err != nil {
 		return "error 122", err
 	}
