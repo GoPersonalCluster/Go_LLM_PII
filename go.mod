@@ -4,7 +4,6 @@ go 1.23.0
 
 require (
 	github.com/GoPersonalCluster/GO_RabbitMqHandler v0.0.0-20260706232745-7f3fe0b56a02
-	github.com/GoPersonalCluster/go_rabbitmq_log v0.0.0-20260709234532-3d85a3b7be31
 	github.com/google/uuid v1.6.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.2

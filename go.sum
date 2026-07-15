@@ -1,7 +1,5 @@
 github.com/GoPersonalCluster/GO_RabbitMqHandler v0.0.0-20260706232745-7f3fe0b56a02 h1:Y1tU8vg1S952hDW33seICvo+5YyMPjl+mZm83CJ/Np8=
 github.com/GoPersonalCluster/GO_RabbitMqHandler v0.0.0-20260706232745-7f3fe0b56a02/go.mod h1:pDiQzaNGsMaYkx4xEDEGiBoreQtYAbngI/DlWVbR88g=
-github.com/GoPersonalCluster/go_rabbitmq_log v0.0.0-20260709234532-3d85a3b7be31 h1:cPts68zIVOIJQxvRTk8ilx3vi80rgsj+EagZKBvnU30=
-github.com/GoPersonalCluster/go_rabbitmq_log v0.0.0-20260709234532-3d85a3b7be31/go.mod h1:2FT/LMg1vuhtvRGAF3fX+5ab6jrFZwYecRf21HUXYfU=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

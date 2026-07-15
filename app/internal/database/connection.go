@@ -29,7 +29,7 @@ func Connect() {
 
 	DB = db
 
-	err = DB.AutoMigrate(&models.TagExtraction{})
+	err = DB.AutoMigrate(&models.Payload{}, &models.TagExtraction{})
 	if err != nil {
 		log.Fatal(err)
 	}
