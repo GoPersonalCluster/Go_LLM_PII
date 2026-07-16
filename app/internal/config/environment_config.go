@@ -7,7 +7,7 @@ import (
 
 func getEnv(key string) string {
 	value, exists := os.LookupEnv(key)
-
+	println("key: ", key, " value: ", value, " exists: ", exists)
 	if !exists {
 		panic(fmt.Sprintf("environment variable %s not set", key))
 	}

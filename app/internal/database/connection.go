@@ -14,7 +14,8 @@ var DB *gorm.DB
 
 func Connect() {
 	config := config.NewEnvironmentConfig()
-	dsn := fmt.Sprintf(
+
+	connStr := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		config.PostgresHost,
 		config.PostgresPort,
@@ -22,7 +23,9 @@ func Connect() {
 		config.PostgresPassword,
 		config.PostgresDB,
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	println("Connecting to database with connection string: ", connStr)
+
+	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
