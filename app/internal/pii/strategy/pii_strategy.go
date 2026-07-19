@@ -2,6 +2,7 @@ package strategy
 
 import (
 	"context"
+	"time"
 
 	"github.com/GoPersonalCluster/GO_RabbitMqHandler/app/service/consumer"
 	llm "github.com/GoPersonalCluster/go_llm_pii/app/internal/client"
@@ -40,5 +41,7 @@ func (pS *PiiStrategy) Start() ([]byte, error) {
 		PayloadID: eventID,
 		Result:    string(response),
 	})
+	println("added to db")
+	time.Sleep(10 * time.Second)
 	return []byte(response), nil
 }

@@ -2,13 +2,13 @@ package pii
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/GoPersonalCluster/GO_RabbitMqHandler/app/service/consumer"
 	"github.com/GoPersonalCluster/go_llm_pii/app/internal/config"
-	"github.com/GoPersonalCluster/go_llm_pii/app/internal/pii/strategy"
 	"github.com/GoPersonalCluster/go_llm_pii/app/internal/database"
 	"github.com/GoPersonalCluster/go_llm_pii/app/internal/models"
-
+	"github.com/GoPersonalCluster/go_llm_pii/app/internal/pii/strategy"
 )
 
 type PiiFactory struct {
@@ -16,11 +16,15 @@ type PiiFactory struct {
 }
 
 func (c *PiiFactory) CreateStrategy(event *consumer.IntegrationEvent) (consumer.StrategyHandler, error) {
-	database.DB.Create( &models.Payload{
+
+	entity := &models.Payload{
 		EventID: event.ID,
 		Payload: event.Payload,
-	})
+	}
 
+	if err := database.DB.Create(entity).Error; err != nil {
+		return nil, fmt.Errorf("failed to insert payload: %w", err)
+	}
 
 	switch event.MetaHeader[len(event.MetaHeader)-1].EventName {
 	case "DefaultPiiEvent":
