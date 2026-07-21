@@ -17,9 +17,10 @@ type PiiFactory struct {
 
 func (c *PiiFactory) CreateStrategy(event *consumer.IntegrationEvent) (consumer.StrategyHandler, error) {
 
+	pl := string(event.Payload)
 	entity := &models.Payload{
 		EventID: event.ID,
-		Payload: event.Payload,
+		Payload: pl,
 	}
 
 	if err := database.DB.Create(entity).Error; err != nil {

@@ -51,7 +51,7 @@ func TestCreatePayload(t *testing.T) {
 	}
 	entity := &models.Payload{
 		EventID: "sdsd",
-		Payload: []byte("sdsd"),
+		Payload: "sdsd",
 	}
 
 	if err := database.DB.Create(entity).Error; err != nil {

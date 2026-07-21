@@ -2,7 +2,7 @@ package strategy
 
 import (
 	"context"
-	"time"
+	"fmt"
 
 	"github.com/GoPersonalCluster/GO_RabbitMqHandler/app/service/consumer"
 	llm "github.com/GoPersonalCluster/go_llm_pii/app/internal/client"
@@ -37,11 +37,15 @@ func (pS *PiiStrategy) Start() ([]byte, error) {
 		return nil, err
 	}
 
-	database.DB.Create(&models.TagExtraction{
+	entity := &models.TagExtraction{
 		PayloadID: eventID,
-		Result:    string(response),
-	})
+		Result:    response,
+	}
+
+	if err := database.DB.Create(entity).Error; err != nil {
+		return nil, fmt.Errorf("failed to insert payload: %w", err)
+	}
+
 	println("added to db")
-	time.Sleep(10 * time.Second)
 	return []byte(response), nil
 }

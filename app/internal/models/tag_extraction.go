@@ -9,7 +9,7 @@ type Payload struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EventID   string    `gorm:"size:64;not null"`
 	OccuredAt int64     `gorm:"autoCreateTime"`
-	Payload   []byte    `gorm:"type:string;not null"`
+	Payload   string    `gorm:"type:string;not null"`
 
 	// Relacionamento 1:N
 	TagExtractions []TagExtraction `gorm:"foreignKey:PayloadID;references:ID"`
@@ -29,7 +29,7 @@ type TagExtraction struct {
 	// Chave estrangeira
 	PayloadID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Result    string `gorm:"size:64;not null"`
+	Result    string `gorm:"type:string;not null"`
 	OccuredAt int64  `gorm:"autoCreateTime"`
 
 	// Relacionamento N:1
