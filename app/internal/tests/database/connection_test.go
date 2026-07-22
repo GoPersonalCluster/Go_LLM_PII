@@ -41,7 +41,6 @@ func TestCreatePayload(t *testing.T) {
 	}
 
 	sqlDB, err := database.DB.DB()
-	time.Sleep(10 * time.Second) // Wait for the database to be ready
 	if err != nil {
 		t.Fatalf("failed to retrieve sql.DB: %v", err)
 	}

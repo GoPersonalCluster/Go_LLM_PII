@@ -25,12 +25,10 @@ func (p *Payload) BeforeCreate(tx *gorm.DB) error {
 
 type TagExtraction struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
 	// Chave estrangeira
 	PayloadID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Result    string `gorm:"type:string;not null"`
-	OccuredAt int64  `gorm:"autoCreateTime"`
+	Result    string    `gorm:"type:string;not null"`
+	OccuredAt int64     `gorm:"autoCreateTime"`
 
 	// Relacionamento N:1
 	Payload Payload `gorm:"foreignKey:PayloadID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

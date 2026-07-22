@@ -17,7 +17,7 @@ type PiiStrategy struct {
 }
 
 func (pS *PiiStrategy) New(iE *consumer.IntegrationEvent) (consumer.StrategyHandler, error) {
-
+	pS.event = iE
 	mh := iE.CreateMetaHeader(config.GetHostName(), "DefaultPiiEvent")
 	iE.MetaHeader = append(iE.MetaHeader, mh)
 
@@ -43,6 +43,8 @@ func (pS *PiiStrategy) Start() ([]byte, error) {
 	}
 
 	if err := database.DB.Create(entity).Error; err != nil {
+		println("failed to insert payload: ", err.Error())
+		println(err.Error())
 		return nil, fmt.Errorf("failed to insert payload: %w", err)
 	}
 
